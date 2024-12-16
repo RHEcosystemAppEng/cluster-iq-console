@@ -21,11 +21,13 @@ import {
   Page,
   Spinner,
   LabelGroup,
+  Dropdown, DropdownItem, DropdownList, Divider, MenuToggle, MenuToggleElement
 } from "@patternfly/react-core";
 import { Table, Tbody, Td, Th, Thead, Tr, ThProps } from "@patternfly/react-table";
 import { getCluster, getClusterInstances, getClusterTags } from "../services/api";
 import { ClusterData, Instance, Tag, TagData } from "@app/types/types";
 import { Link, useLocation  } from "react-router-dom";
+
 interface LabelGroupOverflowProps {
   labels: Array<Tag>;
 }
@@ -165,6 +167,18 @@ const AggregateInstancesPerCluster: React.FunctionComponent = () => {
 };
 
 const ClusterDetails: React.FunctionComponent = () => {
+  ///////////
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  const onToggleClick = () => {
+    setIsOpen(prevState => !prevState);
+  };
+
+  const onSelect = (_event: React.MouseEvent<Element, MouseEvent> | undefined, value: string | number | undefined) => {
+    // eslint-disable-next-line no-console
+    console.log('selected', value);
+    setIsOpen(false);
+  };
   const { clusterID } = useParams();
   const [activeTabKey, setActiveTabKey] = React.useState(0);
   const [tags, setTagData] = useState<TagData>({
@@ -351,6 +365,7 @@ const ClusterDetails: React.FunctionComponent = () => {
         variant={PageSectionVariants.light}
         isWidthLimited
       >
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Tabs
           activeKey={activeTabKey}
           onSelect={handleTabClick}
@@ -366,8 +381,36 @@ const ClusterDetails: React.FunctionComponent = () => {
             eventKey={1}
             title={<TabTitleText>Servers</TabTitleText>}
             tabContentId={`tabContent${1}`}
-          />
+          />          
         </Tabs>
+        <Dropdown
+      isOpen={isOpen}
+      onSelect={onSelect}
+      onOpenChange={(isOpen: boolean) => setIsOpen(isOpen)}
+      toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+        <MenuToggle ref={toggleRef} onClick={onToggleClick} isExpanded={isOpen}>
+          Actions
+        </MenuToggle>
+      )}
+      ouiaId="BasicDropdown"
+      shouldFocusToggleOnSelect
+    >
+      <DropdownList>
+        <DropdownItem value={0} key="power on">
+          Power on
+        </DropdownItem>
+        <DropdownItem
+          value={1}
+          key="power off"
+          to="#default-link2"
+          onClick={(ev: any) => ev.preventDefault()}
+        >
+          Power off
+        </DropdownItem>
+      </DropdownList>
+    </Dropdown>
+  </div>
+        
       </PageSection>
       <PageSection isWidthLimited variant={PageSectionVariants.light}>
         <TabContent
