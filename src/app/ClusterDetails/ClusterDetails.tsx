@@ -21,7 +21,8 @@ import {
   Page,
   Spinner,
   LabelGroup,
-  Dropdown, DropdownItem, DropdownList, Divider, MenuToggle, MenuToggleElement
+  Dropdown, DropdownItem, DropdownList, Divider, MenuToggle, MenuToggleElement,
+  Button
 } from "@patternfly/react-core";
 import { Table, Tbody, Td, Th, Thead, Tr, ThProps } from "@patternfly/react-table";
 import { getCluster, getClusterInstances, getClusterTags } from "../services/api";
@@ -31,6 +32,58 @@ import { Link, useLocation  } from "react-router-dom";
 interface LabelGroupOverflowProps {
   labels: Array<Tag>;
 }
+export const DropdownBasic: React.FunctionComponent = () => {
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  const onToggleClick = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const onSelect = (_event: React.MouseEvent<Element, MouseEvent> | undefined, value: string | number | undefined) => {
+
+    console.log('selected', value);
+    setIsOpen(false);
+  };
+
+  return (
+    <Dropdown
+    isOpen={isOpen}
+    onSelect={onSelect}
+    onOpenChange={(isOpen: boolean) => setIsOpen(isOpen)}
+    toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+      <MenuToggle ref={toggleRef} onClick={onToggleClick} isExpanded={isOpen}>
+        Actions
+      </MenuToggle>
+  )}
+    ouiaId="BasicDropdown"
+    shouldFocusToggleOnSelect
+  >
+  <DropdownList>
+  <DropdownItem value={0} key="power on">
+      Power on
+    </DropdownItem>
+    <DropdownItem
+      value={1}
+      key="power off"
+      to="#default-link2"
+      onClick={(ev: any) => ev.preventDefault()}
+    >
+      Power off
+    </DropdownItem>
+  </DropdownList>
+    </Dropdown>
+  );
+};
+
+// export const DropdownBasic: React.FunctionComponent = () => { 
+//   return (
+//   <Button> 
+//     roni
+//   </Button>)
+// }
+
+export const DividerUsingDiv: React.FunctionComponent = () => <Divider component="div" />;
+
 
 const LabelGroupOverflow: React.FunctionComponent<LabelGroupOverflowProps> = ({
   labels,
@@ -167,7 +220,7 @@ const AggregateInstancesPerCluster: React.FunctionComponent = () => {
 };
 
 const ClusterDetails: React.FunctionComponent = () => {
-  ///////////
+  
   const [isOpen, setIsOpen] = React.useState(false);
 
   const onToggleClick = () => {
@@ -324,7 +377,6 @@ const ClusterDetails: React.FunctionComponent = () => {
   );
 
 
-
   const serversTabContent = (
     <TabContentBody>
       <AggregateInstancesPerCluster />
@@ -334,29 +386,25 @@ const ClusterDetails: React.FunctionComponent = () => {
 
   return (
     <Page>
-
-      {/* Page header */}
       <PageSection isWidthLimited variant={PageSectionVariants.light}>
-
         <Flex
-          spaceItems={{ default: "spaceItemsMd" }}
-          alignItems={{ default: "alignItemsFlexStart" }}
-          flexWrap={{ default: "nowrap" }}
+        spaceItems={{ default: "spaceItemsMd" }}
+        alignItems={{ default: "alignItemsFlexStart" }}
+        flexWrap={{ default: "nowrap" }}
         >
+        <FlexItem>
+        <Label color="blue">Cluster</Label>
+        </FlexItem>
 
+        <FlexItem>
+        <Title headingLevel="h1" size="2xl">
+        {clusterID}
+        </Title>
+        </FlexItem>
 
-          <FlexItem>
-            <Label color="blue">Cluster</Label>
-          </FlexItem>
-          <FlexItem>
-            <Title headingLevel="h1" size="2xl">
-              {clusterID}
-            </Title>
-          </FlexItem>
-          <FlexItem flex={{ default: "flexNone" }}>
-          </FlexItem>
-
-
+        <FlexItem align={{ default: "alignRight" }}>
+        <DropdownBasic></DropdownBasic>
+        </FlexItem>
         </Flex>
         {/* Page tabs */}
       </PageSection>
@@ -364,8 +412,10 @@ const ClusterDetails: React.FunctionComponent = () => {
         type="tabs"
         variant={PageSectionVariants.light}
         isWidthLimited
-      >
+        
+      ><DividerUsingDiv></DividerUsingDiv>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        
         <Tabs
           activeKey={activeTabKey}
           onSelect={handleTabClick}
@@ -381,36 +431,10 @@ const ClusterDetails: React.FunctionComponent = () => {
             eventKey={1}
             title={<TabTitleText>Servers</TabTitleText>}
             tabContentId={`tabContent${1}`}
-          />          
+          />    
         </Tabs>
-        <Dropdown
-      isOpen={isOpen}
-      onSelect={onSelect}
-      onOpenChange={(isOpen: boolean) => setIsOpen(isOpen)}
-      toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
-        <MenuToggle ref={toggleRef} onClick={onToggleClick} isExpanded={isOpen}>
-          Actions
-        </MenuToggle>
-      )}
-      ouiaId="BasicDropdown"
-      shouldFocusToggleOnSelect
-    >
-      <DropdownList>
-        <DropdownItem value={0} key="power on">
-          Power on
-        </DropdownItem>
-        <DropdownItem
-          value={1}
-          key="power off"
-          to="#default-link2"
-          onClick={(ev: any) => ev.preventDefault()}
-        >
-          Power off
-        </DropdownItem>
-      </DropdownList>
-    </Dropdown>
   </div>
-        
+    <DividerUsingDiv></DividerUsingDiv>
       </PageSection>
       <PageSection isWidthLimited variant={PageSectionVariants.light}>
         <TabContent
@@ -431,6 +455,7 @@ const ClusterDetails: React.FunctionComponent = () => {
         >
           <TabContentBody>{serversTabContent}</TabContentBody>
         </TabContent>
+
       </PageSection>
     </Page>
   );
