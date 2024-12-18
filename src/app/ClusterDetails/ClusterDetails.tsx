@@ -2,28 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useParams } from 'react-router-dom';
 import { renderStatusLabel } from "src/app/utils/renderStatusLabel";
 import { parseScanTimestamp, parseNumberToCurrency, } from 'src/app/utils/parseFuncs';
-import {
-  PageSection,
-  PageSectionVariants,
-  Tabs,
-  Tab,
-  TabContent,
-  TabContentBody,
-  TabTitleText,
-  Title,
-  DescriptionList,
-  DescriptionListGroup,
-  DescriptionListTerm,
-  DescriptionListDescription,
-  Label,
-  Flex,
-  FlexItem,
-  Page,
-  Spinner,
-  LabelGroup,
-  Dropdown, DropdownItem, DropdownList, Divider, MenuToggle, MenuToggleElement,
-  Button
-} from "@patternfly/react-core";
+import {PageSection,PageSectionVariants,Tabs,Tab,TabContent,TabContentBody,TabTitleText,Title,
+  DescriptionList,DescriptionListGroup,DescriptionListTerm,DescriptionListDescription,
+  Label,Flex,FlexItem,Page,Spinner,LabelGroup,Dropdown, DropdownItem, DropdownList, Divider, 
+  MenuToggle, MenuToggleElement,} from "@patternfly/react-core";
 import { Table, Tbody, Td, Th, Thead, Tr, ThProps } from "@patternfly/react-table";
 import { getCluster, getClusterInstances, getClusterTags } from "../services/api";
 import { ClusterData, Instance, Tag, TagData } from "@app/types/types";
@@ -34,56 +16,64 @@ interface LabelGroupOverflowProps {
 }
 export const DropdownBasic: React.FunctionComponent = () => {
   const [isOpen, setIsOpen] = React.useState(false);
-
+  const [isPowerOnDisabled, setIsPowerOnDisabled] = React.useState(false);
+  const [isPowerOffDisabled, setIsPowerOffDisabled] = React.useState(false);
   const onToggleClick = () => {
     setIsOpen(!isOpen);
   };
-
-  const onSelect = (_event: React.MouseEvent<Element, MouseEvent> | undefined, value: string | number | undefined) => {
-
-    console.log('selected', value);
-    setIsOpen(false);
+  const [cluster, setClusterData] = useState<ClusterData>({
+    count: 0,
+    clusters: []
+  });
+  const onSelect = (
+    _event: React.MouseEvent<Element, MouseEvent> | undefined,
+    value: string | number | undefined
+  ) => {
+    console.log("selected", value);
+    if (value === 0) {
+      setIsPowerOnDisabled(true);
+      setIsPowerOffDisabled(false);
+    } else if (value === 1) {
+      setIsPowerOnDisabled(false);
+      setIsPowerOffDisabled(true);
+    }
+    setIsOpen(false); 
   };
 
   return (
     <Dropdown
-    isOpen={isOpen}
-    onSelect={onSelect}
-    onOpenChange={(isOpen: boolean) => setIsOpen(isOpen)}
-    toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
-      <MenuToggle ref={toggleRef} onClick={onToggleClick} isExpanded={isOpen}>
-        Actions
-      </MenuToggle>
-  )}
-    ouiaId="BasicDropdown"
-    shouldFocusToggleOnSelect
-  >
-  <DropdownList>
-  <DropdownItem value={0} key="power on">
-      Power on
-    </DropdownItem>
-    <DropdownItem
-      value={1}
-      key="power off"
-      to="#default-link2"
-      onClick={(ev: any) => ev.preventDefault()}
+      isOpen={isOpen}
+      onSelect={onSelect}
+      onOpenChange={(isOpen: boolean) => setIsOpen(isOpen)}
+      toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+        <MenuToggle ref={toggleRef} onClick={onToggleClick} isExpanded={isOpen}>
+          Actions
+        </MenuToggle>
+      )}
+      ouiaId="BasicDropdown"
+      shouldFocusToggleOnSelect
     >
-      Power off
-    </DropdownItem>
-  </DropdownList>
+      <DropdownList>
+        <DropdownItem
+          value={0}
+          key="power on"
+          isDisabled={isPowerOnDisabled} 
+        >
+          Power on
+        </DropdownItem>
+        <DropdownItem
+          value={1}
+          key="power off"
+          isDisabled={isPowerOffDisabled} 
+        >
+          Power off
+        </DropdownItem>
+      </DropdownList>
     </Dropdown>
   );
 };
 
-// export const DropdownBasic: React.FunctionComponent = () => { 
-//   return (
-//   <Button> 
-//     roni
-//   </Button>)
-// }
-
 export const DividerUsingDiv: React.FunctionComponent = () => <Divider component="div" />;
-
 
 const LabelGroupOverflow: React.FunctionComponent<LabelGroupOverflowProps> = ({
   labels,
@@ -101,7 +91,6 @@ const AggregateInstancesPerCluster: React.FunctionComponent = () => {
   const { clusterID } = useParams();
   const { accountName } = useParams();
 
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -117,7 +106,6 @@ const AggregateInstancesPerCluster: React.FunctionComponent = () => {
     };
 
     fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   console.log("Rendered with data:", data);
@@ -168,7 +156,6 @@ const AggregateInstancesPerCluster: React.FunctionComponent = () => {
     },
     columnIndex
   });
-  //### --- ###
 
   return (
     <React.Fragment>
@@ -220,13 +207,10 @@ const AggregateInstancesPerCluster: React.FunctionComponent = () => {
 };
 
 const ClusterDetails: React.FunctionComponent = () => {
-  
   const [isOpen, setIsOpen] = React.useState(false);
-
   const onToggleClick = () => {
     setIsOpen(prevState => !prevState);
   };
-
   const onSelect = (_event: React.MouseEvent<Element, MouseEvent> | undefined, value: string | number | undefined) => {
     // eslint-disable-next-line no-console
     console.log('selected', value);
@@ -273,13 +257,11 @@ const ClusterDetails: React.FunctionComponent = () => {
 
   const ownerTag = filterTagsByKey("Owner");
   const partnerTag = filterTagsByKey("Partner");
-
   const handleTabClick = (event, tabIndex) => {
     setActiveTabKey(tabIndex);
   };
 
   const detailsTabContent = (
-
     <React.Fragment>
     {loading ? (
       <div
@@ -376,13 +358,11 @@ const ClusterDetails: React.FunctionComponent = () => {
     </React.Fragment>
   );
 
-
   const serversTabContent = (
     <TabContentBody>
       <AggregateInstancesPerCluster />
     </TabContentBody>
   );
-
 
   return (
     <Page>
@@ -455,7 +435,6 @@ const ClusterDetails: React.FunctionComponent = () => {
         >
           <TabContentBody>{serversTabContent}</TabContentBody>
         </TabContent>
-
       </PageSection>
     </Page>
   );
