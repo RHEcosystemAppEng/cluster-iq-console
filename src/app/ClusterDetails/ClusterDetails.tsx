@@ -2,33 +2,78 @@ import React, { useEffect, useState } from "react";
 import { useParams } from 'react-router-dom';
 import { renderStatusLabel } from "src/app/utils/renderStatusLabel";
 import { parseScanTimestamp, parseNumberToCurrency, } from 'src/app/utils/parseFuncs';
-import {
-  PageSection,
-  PageSectionVariants,
-  Tabs,
-  Tab,
-  TabContent,
-  TabContentBody,
-  TabTitleText,
-  Title,
-  DescriptionList,
-  DescriptionListGroup,
-  DescriptionListTerm,
-  DescriptionListDescription,
-  Label,
-  Flex,
-  FlexItem,
-  Page,
-  Spinner,
-  LabelGroup,
-} from "@patternfly/react-core";
+import {PageSection,PageSectionVariants,Tabs,Tab,TabContent,TabContentBody,TabTitleText,Title,
+  DescriptionList,DescriptionListGroup,DescriptionListTerm,DescriptionListDescription,
+  Label,Flex,FlexItem,Page,Spinner,LabelGroup,Dropdown, DropdownItem, DropdownList, Divider, 
+  MenuToggle, MenuToggleElement,} from "@patternfly/react-core";
 import { Table, Tbody, Td, Th, Thead, Tr, ThProps } from "@patternfly/react-table";
 import { getCluster, getClusterInstances, getClusterTags } from "../services/api";
 import { ClusterData, Instance, Tag, TagData } from "@app/types/types";
 import { Link, useLocation  } from "react-router-dom";
+
 interface LabelGroupOverflowProps {
   labels: Array<Tag>;
 }
+export const DropdownBasic: React.FunctionComponent = () => {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [isPowerOnDisabled, setIsPowerOnDisabled] = React.useState(false);
+  const [isPowerOffDisabled, setIsPowerOffDisabled] = React.useState(false);
+  const onToggleClick = () => {
+    setIsOpen(!isOpen);
+  };
+  const [cluster, setClusterData] = useState<ClusterData>({
+    count: 0,
+    clusters: []
+  });
+  const onSelect = (
+    _event: React.MouseEvent<Element, MouseEvent> | undefined,
+    value: string | number | undefined
+  ) => {
+    console.log("selected", value);
+    if (value === 0) {
+      setIsPowerOnDisabled(true);
+      setIsPowerOffDisabled(false);
+    } else if (value === 1) {
+      setIsPowerOnDisabled(false);
+      setIsPowerOffDisabled(true);
+    }
+    setIsOpen(false); 
+  };
+
+  return (
+    <Dropdown
+      isOpen={isOpen}
+      onSelect={onSelect}
+      onOpenChange={(isOpen: boolean) => setIsOpen(isOpen)}
+      toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+        <MenuToggle ref={toggleRef} onClick={onToggleClick} isExpanded={isOpen}>
+          Actions
+        </MenuToggle>
+      )}
+      ouiaId="BasicDropdown"
+      shouldFocusToggleOnSelect
+    >
+      <DropdownList>
+        <DropdownItem
+          value={0}
+          key="power on"
+          isDisabled={isPowerOnDisabled} 
+        >
+          Power on
+        </DropdownItem>
+        <DropdownItem
+          value={1}
+          key="power off"
+          isDisabled={isPowerOffDisabled} 
+        >
+          Power off
+        </DropdownItem>
+      </DropdownList>
+    </Dropdown>
+  );
+};
+
+export const DividerUsingDiv: React.FunctionComponent = () => <Divider component="div" />;
 
 const LabelGroupOverflow: React.FunctionComponent<LabelGroupOverflowProps> = ({
   labels,
@@ -46,7 +91,6 @@ const AggregateInstancesPerCluster: React.FunctionComponent = () => {
   const { clusterID } = useParams();
   const { accountName } = useParams();
 
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -62,7 +106,6 @@ const AggregateInstancesPerCluster: React.FunctionComponent = () => {
     };
 
     fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   console.log("Rendered with data:", data);
@@ -113,7 +156,6 @@ const AggregateInstancesPerCluster: React.FunctionComponent = () => {
     },
     columnIndex
   });
-  //### --- ###
 
   return (
     <React.Fragment>
@@ -165,6 +207,15 @@ const AggregateInstancesPerCluster: React.FunctionComponent = () => {
 };
 
 const ClusterDetails: React.FunctionComponent = () => {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const onToggleClick = () => {
+    setIsOpen(prevState => !prevState);
+  };
+  const onSelect = (_event: React.MouseEvent<Element, MouseEvent> | undefined, value: string | number | undefined) => {
+    // eslint-disable-next-line no-console
+    console.log('selected', value);
+    setIsOpen(false);
+  };
   const { clusterID } = useParams();
   const [activeTabKey, setActiveTabKey] = React.useState(0);
   const [tags, setTagData] = useState<TagData>({
@@ -206,13 +257,11 @@ const ClusterDetails: React.FunctionComponent = () => {
 
   const ownerTag = filterTagsByKey("Owner");
   const partnerTag = filterTagsByKey("Partner");
-
   const handleTabClick = (event, tabIndex) => {
     setActiveTabKey(tabIndex);
   };
 
   const detailsTabContent = (
-
     <React.Fragment>
     {loading ? (
       <div
@@ -309,40 +358,33 @@ const ClusterDetails: React.FunctionComponent = () => {
     </React.Fragment>
   );
 
-
-
   const serversTabContent = (
     <TabContentBody>
       <AggregateInstancesPerCluster />
     </TabContentBody>
   );
 
-
   return (
     <Page>
-
-      {/* Page header */}
       <PageSection isWidthLimited variant={PageSectionVariants.light}>
-
         <Flex
-          spaceItems={{ default: "spaceItemsMd" }}
-          alignItems={{ default: "alignItemsFlexStart" }}
-          flexWrap={{ default: "nowrap" }}
+        spaceItems={{ default: "spaceItemsMd" }}
+        alignItems={{ default: "alignItemsFlexStart" }}
+        flexWrap={{ default: "nowrap" }}
         >
+        <FlexItem>
+        <Label color="blue">Cluster</Label>
+        </FlexItem>
 
+        <FlexItem>
+        <Title headingLevel="h1" size="2xl">
+        {clusterID}
+        </Title>
+        </FlexItem>
 
-          <FlexItem>
-            <Label color="blue">Cluster</Label>
-          </FlexItem>
-          <FlexItem>
-            <Title headingLevel="h1" size="2xl">
-              {clusterID}
-            </Title>
-          </FlexItem>
-          <FlexItem flex={{ default: "flexNone" }}>
-          </FlexItem>
-
-
+        <FlexItem align={{ default: "alignRight" }}>
+        <DropdownBasic></DropdownBasic>
+        </FlexItem>
         </Flex>
         {/* Page tabs */}
       </PageSection>
@@ -350,7 +392,10 @@ const ClusterDetails: React.FunctionComponent = () => {
         type="tabs"
         variant={PageSectionVariants.light}
         isWidthLimited
-      >
+        
+      ><DividerUsingDiv></DividerUsingDiv>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        
         <Tabs
           activeKey={activeTabKey}
           onSelect={handleTabClick}
@@ -366,8 +411,10 @@ const ClusterDetails: React.FunctionComponent = () => {
             eventKey={1}
             title={<TabTitleText>Servers</TabTitleText>}
             tabContentId={`tabContent${1}`}
-          />
+          />    
         </Tabs>
+  </div>
+    <DividerUsingDiv></DividerUsingDiv>
       </PageSection>
       <PageSection isWidthLimited variant={PageSectionVariants.light}>
         <TabContent
