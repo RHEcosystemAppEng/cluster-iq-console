@@ -165,7 +165,6 @@ const AggregateInstancesPerCluster: React.FunctionComponent = () => {
     };
 
     fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   console.log('Rendered with data:', data);
@@ -216,7 +215,6 @@ const AggregateInstancesPerCluster: React.FunctionComponent = () => {
     },
     columnIndex,
   });
-  //### --- ###
 
   return (
     <React.Fragment>
@@ -262,6 +260,13 @@ const AggregateInstancesPerCluster: React.FunctionComponent = () => {
 };
 
 const ClusterDetails: React.FunctionComponent = () => {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const onToggleClick = () => {
+    setIsOpen((prevState) => !prevState);
+  };
+  const onSelect = (_event: React.MouseEvent<Element, MouseEvent> | undefined, value: string | number | undefined) => {
+    setIsOpen(false);
+  };
   const { clusterID } = useParams();
   const [activeTabKey, setActiveTabKey] = React.useState(0);
   const [tags, setTagData] = useState<TagData>({
@@ -303,7 +308,6 @@ const ClusterDetails: React.FunctionComponent = () => {
 
   const ownerTag = filterTagsByKey('Owner');
   const partnerTag = filterTagsByKey('Partner');
-
   const handleTabClick = (event, tabIndex) => {
     setActiveTabKey(tabIndex);
   };
@@ -397,7 +401,6 @@ const ClusterDetails: React.FunctionComponent = () => {
 
   return (
     <Page>
-      {/* Page header */}
       <PageSection isWidthLimited variant={PageSectionVariants.light}>
         <Flex
           spaceItems={{ default: 'spaceItemsMd' }}
@@ -407,16 +410,21 @@ const ClusterDetails: React.FunctionComponent = () => {
           <FlexItem>
             <Label color="blue">Cluster</Label>
           </FlexItem>
+
           <FlexItem>
             <Title headingLevel="h1" size="2xl">
               {clusterID}
             </Title>
           </FlexItem>
-          <FlexItem flex={{ default: 'flexNone' }}></FlexItem>
+
+          <FlexItem align={{ default: 'alignRight' }}>
+            <DropdownBasic></DropdownBasic>
+          </FlexItem>
         </Flex>
         {/* Page tabs */}
       </PageSection>
       <PageSection type="tabs" variant={PageSectionVariants.light} isWidthLimited>
+        <Divider />
         <Tabs activeKey={activeTabKey} onSelect={handleTabClick} usePageInsets id="open-tabs-example-tabs-list">
           <Tab eventKey={0} title={<TabTitleText>Details</TabTitleText>} tabContentId={`tabContent${0}`} />
           <Tab eventKey={1} title={<TabTitleText>Servers</TabTitleText>} tabContentId={`tabContent${1}`} />
@@ -433,5 +441,4 @@ const ClusterDetails: React.FunctionComponent = () => {
     </Page>
   );
 };
-
 export default ClusterDetails;
