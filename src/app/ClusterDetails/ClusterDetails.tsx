@@ -32,7 +32,7 @@ import {
   Button,
 } from '@patternfly/react-core';
 import { Table, Tbody, Td, Th, Thead, Tr, ThProps } from '@patternfly/react-table';
-import { getCluster, getClusterInstances, getClusterTags } from '../services/api';
+import { getCluster, getClusterInstances, getClusterTags, startCluster, stopCluster } from '../services/api';
 import { ClusterData, Instance, Tag, TagData } from '@app/types/types';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -78,10 +78,12 @@ export const DropdownBasic: React.FunctionComponent = () => {
 
   const handleConfirm = () => {
     if (modalAction === 'Power on') {
-      // Here we need to add the "Power on" action
+      console.log('Sending request to power on the cluster...');
+      startCluster(clusterID);
       console.log('Powering on the cluster');
     } else if (modalAction === 'Power off') {
-      // " "  " " "Power off" action
+      console.log('Sending request to power off the cluster...');
+      stopCluster(clusterID);
       console.log('Powering off the cluster');
     }
     setIsModalOpen(false);
