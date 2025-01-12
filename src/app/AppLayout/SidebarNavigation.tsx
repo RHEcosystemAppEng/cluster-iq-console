@@ -1,87 +1,57 @@
 import { Nav, NavList, NavItem, NavExpandable } from '@patternfly/react-core';
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 
 const SidebarNavigation: React.FunctionComponent = () => {
-  const navigate = useNavigate();
-  const [activeGroup, setActiveGroup] = React.useState('');
-  const [activeItem, setActiveItem] = React.useState('');
-
-  const onSelect = (
-    _event: React.FormEvent<HTMLInputElement>,
-    result: { itemId: number | string; groupId: number | string; to: string }
-  ) => {
-    setActiveGroup(result.groupId as string);
-    setActiveItem(result.itemId as string);
-    if (result.to) {
-      navigate(result.to);
-    }
-  };
-
-  const onToggle = (
-    _event: React.MouseEvent<HTMLButtonElement>,
-    result: { groupId: number | string; isExpanded: boolean }
-  ) => {
-    setActiveGroup(result.isExpanded ? (result.groupId as string) : '');
-  };
+  const location = useLocation();
 
   return (
-    <Nav onSelect={onSelect} onToggle={onToggle} aria-label="Nav">
+    <Nav aria-label="Nav">
       <NavList>
-        <NavItem preventDefault itemId="overview" to="/" isActive={activeItem === 'overview'}>
-          Overview
+        <NavItem itemId="overview">
+          <NavLink to="/" end>
+            Overview
+          </NavLink>
         </NavItem>
-        <NavItem preventDefault itemId="accounts" to="/accounts" isActive={activeItem === 'accounts'}>
-          Accounts
+        <NavItem itemId="accounts">
+          <NavLink to="/accounts">Accounts</NavLink>
         </NavItem>
-        <NavExpandable
-          title="Clusters"
-          groupId="clusters-group"
-          isActive={activeGroup === 'clusters-group'}
-          isExpanded={activeGroup === 'clusters-group'}
-        >
+
+        <NavExpandable title="Clusters" groupId="clusters-group" isExpanded={location.pathname.startsWith('/clusters')}>
           <NavItem
-            preventDefault
             groupId="clusters-group"
             itemId="clusters-active"
-            isActive={activeItem === 'clusters-active'}
-            to="/clusters"
+            isActive={location.pathname === '/clusters' && !location.search}
           >
-            Active
+            <NavLink to="/clusters" end>
+              Active
+            </NavLink>
           </NavItem>
           <NavItem
-            preventDefault
             groupId="clusters-group"
             itemId="clusters-history"
-            isActive={activeItem === 'clusters-history'}
-            to="/clusters?archived=true"
+            isActive={location.pathname === '/clusters' && location.search === '?archived=true'}
           >
-            History
+            <NavLink to="/clusters?archived=true">History</NavLink>
           </NavItem>
         </NavExpandable>
-        <NavExpandable
-          title="Servers"
-          groupId="servers-group"
-          isActive={activeGroup === 'servers-group'}
-          isExpanded={activeGroup === 'servers-group'}
-        >
+
+        <NavExpandable title="Servers" groupId="servers-group" isExpanded={location.pathname.startsWith('/servers')}>
           <NavItem
-            preventDefault
             groupId="servers-group"
             itemId="servers-active"
-            isActive={activeItem === 'servers-active'}
-            to="/servers"
+            isActive={location.pathname === '/servers' && !location.search}
           >
-            Active
+            <NavLink to="/servers" end>
+              Active
+            </NavLink>
           </NavItem>
           <NavItem
-            preventDefault
             groupId="servers-group"
             itemId="servers-history"
-            isActive={activeItem === 'servers-history'}
-            to="/servers?archived=true"
+            isActive={location.pathname === '/servers' && location.search === '?archived=true'}
           >
-            History
+            <NavLink to="/servers?archived=true">History</NavLink>
           </NavItem>
         </NavExpandable>
       </NavList>
