@@ -68,6 +68,24 @@ export type Instances = {
   instances: Instance[];
 };
 
+export type AuditEvent = {
+  id: number;
+  action_name: string;
+  event_timestamp: string;
+  reason?: string;
+  resource_id: string;
+  resource_type: string;
+  result: string;
+  // Should be typed?
+  severity: string;
+  triggered_by: string;
+};
+
+export type AuditEvents = {
+  count: number;
+  events: AuditEvent[];
+};
+
 export enum ClusterStates {
   Running = 'Running',
   Stopped = 'Stopped',
