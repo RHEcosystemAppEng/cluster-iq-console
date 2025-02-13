@@ -15,10 +15,11 @@ interface TableEventsProps {
 }
 
 const columnNames = {
-  description: 'Description',
+  action: 'Action',
   result: 'Result',
   severity: 'Severity',
   loggedBy: 'Logged by',
+  description: 'Description',
   date: 'Date',
 };
 
@@ -27,11 +28,12 @@ const TableEvents: React.FunctionComponent<TableEventsProps> = ({ data, getSortP
     <Table aria-label="Events table">
       <Thead>
         <Tr>
-          <Th sort={getSortParams(0)}>{columnNames.description}</Th>
+          <Th sort={getSortParams(0)}>{columnNames.action}</Th>
           <Th sort={getSortParams(1)}>{columnNames.result}</Th>
           <Th sort={getSortParams(2)}>{columnNames.severity}</Th>
           <Th sort={getSortParams(3)}>{columnNames.loggedBy}</Th>
-          <Th sort={getSortParams(4)}>{columnNames.date}</Th>
+          <Th sort={getSortParams(4)}>{columnNames.description}</Th>
+          <Th sort={getSortParams(5)}>{columnNames.date}</Th>
         </Tr>
       </Thead>
       <Tbody>
@@ -43,6 +45,7 @@ const TableEvents: React.FunctionComponent<TableEventsProps> = ({ data, getSortP
             </Td>
             <Td>{event.severity}</Td>
             <Td>{event.triggered_by}</Td>
+            <Td>{event.description}</Td>
             <Td>{event.event_timestamp}</Td>
           </Tr>
         ))}
@@ -84,11 +87,11 @@ export const ClusterDetailsEvents: React.FunctionComponent = () => {
   console.log('Rendered events data:', data);
 
   const getSortableRowValues = (event: AuditEvent): (string | number | null)[] => {
-    const { action_name, result, severity, triggered_by, event_timestamp } = event;
-    return [action_name, result, severity, triggered_by, event_timestamp];
+    const { action_name, result, severity, triggered_by, description: description, event_timestamp } = event;
+    return [action_name, result, severity, triggered_by, description ?? null, event_timestamp];
   };
 
-  const { sortedData, getSortParams } = useTableSort<AuditEvent>(data, getSortableRowValues, 4, 'desc');
+  const { sortedData, getSortParams } = useTableSort<AuditEvent>(data, getSortableRowValues, 5, 'desc');
   if (loading) return <LoadingSpinner />;
   if (sortedData.length === 0) return <EmptyStateNoFound />;
   return <TableEvents data={sortedData} getSortParams={getSortParams} />;

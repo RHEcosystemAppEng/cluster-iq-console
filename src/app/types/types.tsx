@@ -72,7 +72,7 @@ export type AuditEvent = {
   id: number;
   action_name: string;
   event_timestamp: string;
-  reason?: string;
+  description?: string;
   resource_id: string;
   resource_type: string;
   result: string;

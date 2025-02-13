@@ -122,11 +122,11 @@ export async function startCluster(clusterID, userEmail, reason) {
 }
 
 // Stop a cluster
-export async function stopCluster(clusterID, userEmail, reason) {
+export async function stopCluster(clusterID, userEmail, description) {
   try {
     const response = await apiClient.post(`clusters/${clusterID}/power_off`, {
       triggered_by: userEmail || 'unknown',
-      reason: reason || null,
+      description: description || null,
     });
 
     console.log('Power off request was sent.');
