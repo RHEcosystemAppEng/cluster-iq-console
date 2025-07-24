@@ -78,7 +78,7 @@ ts-prettier: ## Runs code prettier
 
 ts-prettier-fix: ## Runs code prettier fixing
 	@echo "### [Running Prettier] ###"
-	@npx prettier --log-level=warn --check --write . && git diff ./src
+	@npx prettier --log-level=warn --check --write . && git diff .
 
 ts-eslint: ## Runs Linter
 	@echo "### [Running EsLinter] ###"
