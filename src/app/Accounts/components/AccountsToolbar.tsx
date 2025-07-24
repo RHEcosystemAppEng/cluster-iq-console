@@ -238,7 +238,6 @@ export const AccountsToolbar: React.FunctionComponent<AccountsToolbarProps> = ({
     </MenuToggle>
   );
   const attributeMenu = (
-     
     <Menu
       ref={attributeMenuRef}
       onSelect={(_ev, itemId) => {

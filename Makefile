@@ -72,15 +72,19 @@ stop-dev: ## Stops the container based development env
 restart-dev: ## Restarts the container based env
 restart-dev: stop-dev start-dev
 
-ts-prettier:
+ts-prettier: ## Runs code prettier
 	@echo "### [Running Prettier] ###"
 	@npx prettier --log-level=warn --check ./src
 
-ts-eslint:
+ts-prettier-fix: ## Runs code prettier fixing
+	@echo "### [Running Prettier] ###"
+	@npx prettier --log-level=warn --check --write ./src && git diff ./src
+
+ts-eslint: ## Runs Linter
 	@echo "### [Running EsLinter] ###"
 	@npx eslint ./src
 
-ts-tsc:
+ts-tsc: ## Runs Typescript type test
 	@echo "### [Running TSC test] ###"
 	@npx tsc --noEmit
 

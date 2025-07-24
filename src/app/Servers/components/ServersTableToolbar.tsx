@@ -316,7 +316,6 @@ export const ServersTableToolbar: React.FunctionComponent<ServersTableToolbarPro
     </MenuToggle>
   );
   const attributeMenu = (
-     
     <Menu
       ref={attributeMenuRef}
       onSelect={(_ev, itemId) => {
