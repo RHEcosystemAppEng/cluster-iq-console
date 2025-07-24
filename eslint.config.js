@@ -8,7 +8,7 @@ import unusedImports from 'eslint-plugin-unused-imports';
 
 export default [
   {
-    ignores: ['dist'],
+    ignores: ['dist', 'vite.config.ts'],
   },
   {
     files: ['**/*.{ts,tsx}'],

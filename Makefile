@@ -82,7 +82,7 @@ ts-prettier-fix: ## Runs code prettier fixing
 
 ts-eslint: ## Runs Linter
 	@echo "### [Running EsLinter] ###"
-	@npx eslint ./src
+	@npx eslint .
 
 ts-tsc: ## Runs Typescript type test
 	@echo "### [Running TSC test] ###"
