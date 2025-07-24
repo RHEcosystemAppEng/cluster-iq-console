@@ -19,6 +19,7 @@ jobs:
 
       - name: Code Linter
         run: |
+          npm install --save-dev @eslint/js
           make ts-eslint
 
       - name: Typescript type check
