@@ -57,7 +57,6 @@ const ClusterDetailsOverview: React.FunctionComponent = () => {
     };
 
     fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const filterTagsByKey = key => {
