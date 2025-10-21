@@ -1,7 +1,10 @@
 import { CardDefinition, CardLayout, DashboardState } from '../types';
 import { CLOUD_PROVIDERS, STATUSES } from '../constants';
+import { Event } from '@app/types/events';
+import { ActivityTable } from './ActivityTable';
+import React from 'react';
 
-export const generateCards = (state: DashboardState): Record<string, CardDefinition[]> => {
+export const generateCards = (state: DashboardState, events: Event[] = []): Record<string, CardDefinition[]> => {
   const scannerContent = state.lastScanTimestamp
     ? `${new Date(state.lastScanTimestamp).toLocaleString()}`
     : 'No scan data available';
@@ -50,13 +53,10 @@ export const generateCards = (state: DashboardState): Record<string, CardDefinit
 
   const activityCards = [
     {
-      title: 'Activity',
-      content: [
-        {
-          value: 'Recent events and activities will be displayed here',
-        },
-      ],
+      title: 'Recent events',
+      content: [], // Empty content since we're using customComponent
       layout: CardLayout.MULTI_ICON,
+      customComponent: <ActivityTable events={events} />,
     },
   ];
 

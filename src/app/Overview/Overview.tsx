@@ -17,9 +17,11 @@ import { generateCards } from './components/CardData';
 import { CloudProvider } from './types';
 import { renderContent } from './components/CardRenderer';
 import { useDashboardData } from './hooks/useDashboardData';
+import { useEventsData } from './hooks/useEventsData';
 
 const AggregateStatusCards: React.FunctionComponent = () => {
   const { inventoryData } = useDashboardData();
+  const { events, loading: eventsLoading, error: eventsError } = useEventsData();
 
   if (!inventoryData) {
     return <LoadingSpinner />;
@@ -33,10 +35,10 @@ const AggregateStatusCards: React.FunctionComponent = () => {
       terminated: inventoryData?.clusters?.archived || 0,
     },
     instancesByStatus: {
-      running: inventoryData?.instances?.running || 0,
-      stopped: inventoryData?.instances?.stopped || 0,
-      unknown: inventoryData?.instances?.unknown || 0,
-      terminated: inventoryData?.instances?.archived || 0,
+      running: 0, // Not available in current API
+      stopped: 0, // Not available in current API
+      unknown: 0, // Not available in current API
+      terminated: 0, // Not available in current API
     },
     clustersByProvider: {
       [CloudProvider.AWS]: inventoryData.providers.aws?.cluster_count || 0,
@@ -52,7 +54,7 @@ const AggregateStatusCards: React.FunctionComponent = () => {
     lastScanTimestamp: inventoryData.scanner?.last_scan_timestamp,
   };
 
-  const cardData = generateCards(dashboardState);
+  const cardData = generateCards(dashboardState, events);
 
   return (
     <React.Fragment>
@@ -67,12 +69,22 @@ const AggregateStatusCards: React.FunctionComponent = () => {
             <GridItem key={groupIndex} span={groupName === 'activityCards' ? 12 : undefined}>
               {groupName === 'activityCards' ? (
                 // Full width Activity card with double height
-                <Card style={{ textAlign: 'center', minHeight: '200px' }} component="div">
-                  <CardTitle>{cards[0].title}</CardTitle>
-                  <CardBody
-                    style={{ minHeight: '150px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                  >
-                    {renderContent(cards[0].content, cards[0].layout)}
+                <Card style={{ minHeight: '500px' }} component="div">
+                  <CardTitle style={{ textAlign: 'center' }}>{cards[0].title}</CardTitle>
+                  <CardBody style={{ minHeight: '450px', padding: '1rem' }}>
+                    {eventsLoading ? (
+                      <LoadingSpinner />
+                    ) : eventsError ? (
+                      <div style={{ color: 'red' }}>
+                        Error: {eventsError}
+                        <br />
+                        <small>Check console for details</small>
+                      </div>
+                    ) : cards[0].customComponent ? (
+                      cards[0].customComponent
+                    ) : (
+                      renderContent(cards[0].content, cards[0].layout)
+                    )}
                   </CardBody>
                 </Card>
               ) : (

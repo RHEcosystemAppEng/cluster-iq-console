@@ -22,6 +22,7 @@ export interface CardDefinition {
   title: string;
   content: CardContentItem[];
   layout: CardLayout;
+  customComponent?: React.ReactNode;
 }
 
 export interface DashboardState {
