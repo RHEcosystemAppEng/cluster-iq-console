@@ -26,6 +26,7 @@ export interface CardDefinition {
 
 export interface DashboardState {
   clustersByStatus: Record<string, number>;
+  instancesByStatus: Record<string, number>;
   clustersByProvider: Record<CloudProvider, number>;
   accountsByProvider: Record<CloudProvider, number>;
   instances: number;

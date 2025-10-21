@@ -48,8 +48,21 @@ export const generateCards = (state: DashboardState): Record<string, CardDefinit
     layout: CardLayout.MULTI_ICON,
   }));
 
+  const activityCards = [
+    {
+      title: 'Activity',
+      content: [
+        {
+          value: 'Recent events and activities will be displayed here',
+        },
+      ],
+      layout: CardLayout.MULTI_ICON,
+    },
+  ];
+
   return {
     statusCards,
     providerCards,
+    activityCards,
   };
 };

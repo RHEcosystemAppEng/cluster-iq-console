@@ -63,23 +63,36 @@ const AggregateStatusCards: React.FunctionComponent = () => {
       </PageSection>
       <PageSection>
         <Grid hasGutter>
-          {Object.entries(cardData).map(([, cards], groupIndex) => (
-            <GridItem key={groupIndex}>
-              <Gallery
-                hasGutter
-                style={
-                  {
-                    '--pf-v5-l-gallery--GridTemplateColumns--min': '30%',
-                  } as any
-                }
-              >
-                {cards.map((card, cardIndex) => (
-                  <Card style={{ textAlign: 'center' }} key={`${groupIndex}${cardIndex}`} component="div">
-                    <CardTitle>{card.title}</CardTitle>
-                    <CardBody>{renderContent(card.content, card.layout)}</CardBody>
-                  </Card>
-                ))}
-              </Gallery>
+          {Object.entries(cardData).map(([groupName, cards], groupIndex) => (
+            <GridItem key={groupIndex} span={groupName === 'activityCards' ? 12 : undefined}>
+              {groupName === 'activityCards' ? (
+                // Full width Activity card with double height
+                <Card style={{ textAlign: 'center', minHeight: '200px' }} component="div">
+                  <CardTitle>{cards[0].title}</CardTitle>
+                  <CardBody
+                    style={{ minHeight: '150px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                  >
+                    {renderContent(cards[0].content, cards[0].layout)}
+                  </CardBody>
+                </Card>
+              ) : (
+                // Regular cards in Gallery
+                <Gallery
+                  hasGutter
+                  style={
+                    {
+                      '--pf-v5-l-gallery--GridTemplateColumns--min': '30%',
+                    } as any
+                  }
+                >
+                  {cards.map((card, cardIndex) => (
+                    <Card style={{ textAlign: 'center' }} key={`${groupIndex}${cardIndex}`} component="div">
+                      <CardTitle>{card.title}</CardTitle>
+                      <CardBody>{renderContent(card.content, card.layout)}</CardBody>
+                    </Card>
+                  ))}
+                </Gallery>
+              )}
             </GridItem>
           ))}
         </Grid>
