@@ -37,6 +37,7 @@ export const ActivityTable: React.FunctionComponent<ActivityTableProps> = ({ eve
     <Table aria-label="Recent events table" variant="compact">
       <Thead>
         <Tr>
+          <Th></Th>
           <Th>Time</Th>
           <Th>Action</Th>
           <Th>Result</Th>
@@ -47,14 +48,10 @@ export const ActivityTable: React.FunctionComponent<ActivityTableProps> = ({ eve
       <Tbody>
         {events.map(event => (
           <Tr key={event.id}>
+            <Td>{getResultIcon(event.result)}</Td>
             <Td>{new Date(event.timestamp).toLocaleString()}</Td>
             <Td>{event.action}</Td>
-            <Td>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                {getResultIcon(event.result)}
-                {event.result}
-              </span>
-            </Td>
+            <Td>{event.result}</Td>
             <Td>
               {event.resourceType} {event.resourceId}
             </Td>
