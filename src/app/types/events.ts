@@ -8,8 +8,7 @@ export interface Event {
   severity: string;
   triggeredBy: string;
   description?: string;
-  accountID?: string;
-  provider?: string;
+  accountID: string;
 }
 
 export interface EventsResponse {
