@@ -74,11 +74,11 @@ restart-dev: stop-dev start-dev
 
 ts-prettier: ## Runs code prettier
 	@echo "### [Running Prettier] ###"
-	@npx prettier --log-level=warn --check .
+	@npx prettier --log-level=warn --check ./src
 
 ts-prettier-fix: ## Runs code prettier fixing
 	@echo "### [Running Prettier] ###"
-	@npx prettier --log-level=warn --check --write . && git diff .
+	@npx prettier --log-level=warn --check --write ./src && git diff ./src
 
 ts-eslint: ## Runs Linter
 	@echo "### [Running EsLinter] ###"
