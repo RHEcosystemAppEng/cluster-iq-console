@@ -4,6 +4,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { ActionOperations } from '@app/types/types';
 import { ClusterActionConfirm } from './ClusterActionConfirm';
+import { useUser } from '@app/Contexts/UserContext.tsx';
 
 interface ClusterDetailsDropdownProps {
   clusterStatus: ResourceStatusApi | null;
@@ -15,7 +16,7 @@ export const ClusterDetailsDropdown: React.FunctionComponent<ClusterDetailsDropd
   const [actionOperation, setActionOperation] = React.useState<ActionOperations | null>(null);
 
   const { clusterID } = useParams();
-  const { userEmail } = useParams();
+  const { userEmail } = useUser();
 
   const onSelect = (_event: React.MouseEvent<Element, MouseEvent> | undefined, value: string | number | undefined) => {
     const operation = value as ActionOperations;
@@ -71,7 +72,7 @@ export const ClusterDetailsDropdown: React.FunctionComponent<ClusterDetailsDropd
         isOpen={isModalOpen}
         onConfirm={() => {
           if (!clusterID || !actionOperation) return;
-          actionCreate(clusterID, actionOperation, userEmail!, '');
+          actionCreate(clusterID, actionOperation, userEmail!, 'instant-action');
           resetModalState();
         }}
         onClose={resetModalState}

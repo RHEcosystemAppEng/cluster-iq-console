@@ -50,13 +50,13 @@ export const api = {
 
 export const startCluster = (clusterID: string, userEmail?: string, description?: string) =>
   http.instance.post(`/clusters/${clusterID}/power_on`, {
-    triggered_by: userEmail || 'unknown',
+    requester: userEmail || 'unknown',
     description: description,
   });
 
 export const stopCluster = (clusterID: string, userEmail?: string, description?: string) =>
   http.instance.post(`/clusters/${clusterID}/power_off`, {
-    triggered_by: userEmail || 'unknown',
+    requester: userEmail || 'unknown',
     description: description,
   });
 
